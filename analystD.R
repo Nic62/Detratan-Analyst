@@ -124,23 +124,31 @@ df_corrigido %>%
   labs(title = "Quantidade de Acidentes por Estado (UF)", x = "Estado", y = "Quantidade de Acidentes") +
   theme_minimal()
 
-#Top 3 BR's com mais Acidentes
-df_corrigido %>%
+# Selecionar os Top 10 BRs com mais acidentes
+top_brs <- df_corrigido %>%
   count(br) %>%
-  top_n(3) %>%
+  top_n(10, n) %>%
   arrange(desc(n)) %>%
-  ggplot(aes(x = reorder(br, -n), y = n, fill = br)) +
+  mutate(br = factor(br))
+
+cores_amarelas <- colorRampPalette(c("#FFD700", "#FFC107", "#FFB300", "#FFA500"))(10)
+
+ggplot(top_brs, aes(x = reorder(br, -n), y = n, fill = br)) +
   geom_col() +
-  geom_text(aes(label = n), vjust = -0.3, color = "black", fontface = "bold") +
+  geom_text(aes(label = n), vjust = -0.3, color = "black", fontface = "bold", size = 4) +
+  scale_fill_manual(values = cores_amarelas) +
   labs(
-    title = "Top 3 BR's com mais Acidentes",
+    title = "Top 10 BRs com Mais Acidentes",
     x = "BR",
     y = "Quantidade de Acidentes"
   ) +
-  theme_minimal() +
+  theme_minimal(base_size = 12) +
   theme(
     axis.text.x = element_text(angle = 45, hjust = 1),
-    legend.position = "none")
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
+    legend.position = "none"
+  )
+
 
 # Boxplot de KM dos acidentes
 df_corrigido$km <- as.numeric(df_corrigido$km)
@@ -219,21 +227,28 @@ df_sentido_via <- df_corrigido %>%
   count(sentido_via) %>%
   mutate(percentage = n / sum(n) * 100)
 
-#
+# Condições Meteorológicas
+
 df_condicao_metereologica <- df_corrigido %>%
   count(condicao_metereologica) %>%
   mutate(percentage = n / sum(n) * 100)
-
 num_niveis <- length(unique(df_condicao_metereologica$condicao_metereologica))
-cores <- colorRampPalette(c("#FF8C00", "#e0a96d", "#d1b28d"))(num_niveis)
+cores <- colorRampPalette(c("#FFD700", "#FFC300", "#FFB347", "#FFA500"))(num_niveis)
 
 ggplot(df_condicao_metereologica, aes(x = reorder(condicao_metereologica, -percentage), y = percentage, fill = condicao_metereologica)) +
-  geom_bar(stat = "identity", show.legend = TRUE) +
-  geom_text(aes(label = sprintf("%.1f%%", percentage)), vjust = -0.5, color = "black") +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  geom_text(aes(label = sprintf("%.1f%%", percentage)), vjust = -0.4, color = "black", size = 3.5) +
   scale_fill_manual(values = cores) +
-  labs(title = "Condição Meteorológica", x = "Condição Meteorológica", y = "Porcentagem") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+  labs(
+    title = "Distribuição das Condições Meteorológicas",
+    x = "Condição Meteorológica",
+    y = "Porcentagem"
+  ) +
+  theme_minimal(base_size = 12) +
+  theme(
+    axis.text.x = element_text(angle = 45, hjust = 1),
+    plot.title = element_text(face = "bold", size = 14, hjust = 0.5)
+  )
 
 #Tipo de pista
 
@@ -252,21 +267,7 @@ ggplot(df_tipo_pista, aes(x = reorder(tipo_pista, -percentage), y = percentage, 
   theme_minimal() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-#Via
-df_tracado_via <- df_corrigido %>%
-  count(tracado_via) %>%
-  mutate(percentage = n / sum(n) * 100)
 
-num_niveis <- length(unique(df_tracado_via$tracado_via))
-cores <- colorRampPalette(c("#FF8C00", "#e0a96d", "#d1b28d"))(num_niveis)
-
-ggplot(df_tracado_via, aes(x = reorder(tracado_via, -percentage), y = percentage, fill = tracado_via)) +
-  geom_bar(stat = "identity", show.legend = TRUE) +
-  geom_text(aes(label = sprintf("%.1f%%", percentage)), vjust = -0.5, color = "black") +
-  scale_fill_manual(values = cores) +
-  labs(title = "Traçado da Via", x = "Traçado da Via", y = "Porcentagem") +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
 #Uso do Solo
 df_uso_solo <- df_corrigido %>%

@@ -21,11 +21,15 @@ A série analisada refere-se à **Acidentes registrados pelo Detran**;sendo este
 
 ## 🧰 Ferramentas e Pacotes Utilizados
 
-- 📦 `forecast`  
-- 📦 `tseries`  
-- 📦 `ggplot2`  
 - 📦 `readr`  
+- 📦 `dplyr`  
+- 📦 `ggplot2`  
+- 📦 `tidyr`  
+- 📦 `stringr`  
+- 📦 `ggmap`  
+- 📦 `maps`  
+- 📦 `RColorBrewer`  
 - 📦 `lubridate`  
-- 📦 `urca`  
-
-
+- 📦 `lubridate`  
+- 📦 `forcats`  
+- 📦 `scales`  
